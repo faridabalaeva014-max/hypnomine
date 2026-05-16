@@ -21,7 +21,7 @@ app.post('/api/register', (req, res) => {
     db.users.findOne({ username: username.toLowerCase() }, (err, user) => {
         if (user) return res.send('Этот ник уже зарегистрирован на форуме!');
         db.users.insert({ username: username.toLowerCase(), displayName: username, password, role: 'player' }, (err, newUser) => {
-            res.redirect('/index.html?reg=success');
+            res.redirect('/index.html');
         });
     });
 });
