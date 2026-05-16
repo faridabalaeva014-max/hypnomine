@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Личный кабинет игрока</title>
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; background: #14141c; color: #fff; padding: 20px; max-width: 600px; margin: 0 auto; }
+        .box { background: #1f1f2e; padding: 20px; border-radius: 10px; margin-bottom: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.3); }
+        h2 { color: #00ffcc; }
+        textarea { width: 96%; height: 100px; background: #2a2a3d; border: 1px solid #444; border-radius: 6px; color: #fff; padding: 10px; resize: none; }
+        button { margin-top: 10px; padding: 12px 20px; background: #5733ff; color: white; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; }
+        .ticket { background: #2a2a3d; padding: 15px; margin-top: 15px; border-radius: 6px; border-left: 5px solid #00ffcc; }
+        .status { font-weight: bold; color: #ffcc00; }
+    </style>
+</head>
+<body>
+    <h2 id="welcome">Загрузка данных...</h2>
+    
+    <div class="box">
+        <h3>Создать новый тикет (Жалоба / Вопрос)</h3>
+        <form action="/api/tickets" method="POST">
+            <input type="hidden" name="username" id="form-username">
+            <textarea name="text" placeholder="Опишите вашу проблему или задайте вопрос администрации сервера..." required></textarea>
+            <button type="submit">Отправить обращение</button>
+        </form>
+    </div>
+
+    <h3>История ваших тикетов:</h3>
+    <div id="tickets-list"></div>
+
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const username = urlParams.get('user') || 'Игрок';
+        document.getElementById('welcome').innerText = `Личный кабинет: ${username}`;
+        document.getElementById('form-username').value = username;
+
+        // Запрашиваем тикеты конкретного вошедшего игрока
+        fetch(`/api/tickets/${username}`)
+            .then(res => res.json())
+            .then(tickets => {
+                const list = document.getElementById('tickets-list');
+                if(tickets.length === 0) {
+                    list.innerHTML = '<p style="color: #888;">Вы еще не создавали тикетов.</p>';
+                }
+                tickets.forEach(t => {
+                    list.innerHTML += `
+                        <div class="ticket">
+                            <small style="color: #888;">${t.date} | Статус: <span class="status">${t.status}</span></small>
+                            <p style="margin: 10px 0;"><b>Ваш вопрос:</b> ${t.text}</p>
+                            <p style="color: #00ffcc; background: #1f1f2e; padding: 10px; border-radius: 4px;"><b>Ответ Администрации:</b> ${t.reply}</p>
+                        </div>
+                    `;
+                });
+            });
+    </script>
+</body>
+</html>

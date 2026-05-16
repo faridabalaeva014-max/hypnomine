@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HypnoMine — Вход</title>
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; background: #14141c; color: #fff; text-align: center; padding: 50px 10px; }
+        .container { background: #1f1f2e; padding: 30px; display: inline-block; border-radius: 12px; box-shadow: 0 8px 24px rgba(0,0,0,0.4); max-width: 90%; width: 360px; }
+        h2 { color: #5733ff; margin-bottom: 20px; }
+        input { display: block; margin: 12px auto; padding: 12px; width: 90%; background: #2a2a3d; border: 1px solid #444; border-radius: 6px; color: #fff; }
+        button { width: 96%; padding: 12px; background: #5733ff; color: #fff; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; transition: 0.2s; }
+        button:hover { background: #4522dd; }
+        a { color: #00ffcc; text-decoration: none; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>HypnoMine Форум</h2>
+        <form action="/api/login" method="POST">
+            <input type="text" name="username" placeholder="Ваш ник в Minecraft" required>
+            <input type="password" name="password" placeholder="Пароль" required>
+            <button type="submit">Войти в аккаунт</button>
+        </form>
+        <p style="margin-top: 20px;">Нет аккаунта? <a href="register.html">Создать аккаунт</a></p>
+    </div>
+</body>
+</html>

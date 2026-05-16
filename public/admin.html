@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Панель Администратора</title>
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; background: #14141c; color: #fff; padding: 20px; max-width: 700px; margin: 0 auto; }
+        h2 { color: #ff3366; }
+        .ticket { background: #1f1f2e; padding: 20px; margin-bottom: 20px; border-radius: 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.3); border-left: 5px solid #ff3366; }
+        textarea { width: 96%; height: 60px; background: #2a2a3d; border: 1px solid #444; border-radius: 6px; color: #fff; padding: 10px; margin-top: 10px; }
+        button { margin-top: 10px; padding: 10px 15px; background: #ff3366; color: white; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <h2>Панель ответа на тикеты (Админ)</h2>
+    <div id="admin-tickets"></div>
+
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const adminName = urlParams.get('user') || 'Admin';
+
+        // Загружаем абсолютно все тикеты из базы данных для админа
+        fetch('/api/admin/tickets')
+            .then(res => res.json())
+            .then(tickets => {
+                const list = document.getElementById('admin-tickets');
+                if(tickets.length === 0) {
+                    list.innerHTML = '<p style="color: #888;">Нет активных тикетов от игроков.</p>';
+                }
+                tickets.forEach(t => {
+                    list.innerHTML += `
+                        <div class="ticket">
+                            <p><b>Отправитель:</b> <span style="color: #00ffcc;">${t.username}</span> (${t.date})</p>
+                            <p><b>Текст тикета:</b> ${t.text}</p>
+                            <p style="color: #aaa;">Текущий статус ответа: ${t.reply}</p>
+                            <form action="/api/tickets/reply" method="POST">
+                                <input type="hidden" name="ticketId" value="${t._id}">
+                                <input type="hidden" name="adminName" value="${adminName}">
+                                <textarea name="replyText" placeholder="Напишите ответ игроку..." required></textarea>
+                                <button type="submit">Отправить ответ</button>
+                            </form>
+                        </div>
+                    `;
+                });
+            });
+    </script>
+</body>
+</html>
